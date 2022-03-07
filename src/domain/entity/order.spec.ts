@@ -1,24 +1,30 @@
-import exp from 'constants';
-import { Address } from '../vo/address';
-import { Customer } from './customer';
-import { Order } from './order';
-import { OrderItem } from './orderItem';
+import exp from "constants";
+import { Order } from "./order";
+import { OrderItem } from "./orderItem";
 
 describe("Order entity test", () => {
+  test("Should throw error when order id is empty", () => {
+    let items: OrderItem[] = [new OrderItem("1", "Item 1", 10.5, 1)];
+    expect(() => new Order("", "1", items)).toThrow("Order id is required");
+  });
 
-    test("Should test order total", () => {
-        // agregate customer
-        let customer = new Customer("123", "Adriano");
-        const address = new Address("Rua Teste", "123", "Bairro Teste", "São Paulo", "Brasil", "12345-678")
-        customer.setAddress(address);
+  test("Should throw error when customer id is empty", () => {
+    expect(
+      () => new Order("1", "", [new OrderItem("1", "Item 1", 10.5, 1)])
+    ).toThrow("Customer id is required");
+  });
 
-        // agregate order
-        let items: OrderItem[] = [
-            new OrderItem("1", "Item 1", 10.5, 1),
-            new OrderItem("2", "Item 2", 5.5, 2),
-        ];
-        let order = new Order("1", customer.custmerId, items);
-        expect(order.total).toBe(21.5);
-    })
+  test("Should throw error when items is empty", () => {
+    expect(() => new Order("1", "1", [])).toThrow("Items are required");
+  });
 
+  test("Should test order total", () => {
+    // agregate order
+    let items: OrderItem[] = [
+      new OrderItem("1", "Item 1", 10.5, 1),
+      new OrderItem("2", "Item 2", 5.5, 2),
+    ];
+    let order = new Order("1", "1", items);
+    expect(order.total()).toBe(21.5);
+  });
 });

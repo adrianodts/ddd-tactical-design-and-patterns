@@ -1,43 +1,54 @@
 import { Address } from "../vo/address";
 
 export class Customer {
+  private active: boolean = false;
+  private address: Address | any = null;
+  private _id: string;
+  private _name: string;
 
-    private active: boolean = false;
-    private address: Address | any = null;
+  constructor(id: string, name: string) {
+    this._id = id;
+    this._name = name;
+    this.validate();
+  }
 
-    constructor(private id: string, private name: string) {
-        this.validate();
+  private validate(): void {
+    if (!this._id || this._id.trim().length === 0) {
+      throw new Error("Customer id is required");
     }
-
-    private validate(): void {
-        if (!this.id || this.id.trim().length === 0) {
-            throw new Error('Customer id is required');
-        }
-        if (!this.name || this.name.trim().length === 0) {
-            throw new Error('Customer name is required');
-        }
+    if (!this._name || this._name.trim().length === 0) {
+      throw new Error("Customer name is required");
     }
+  }
 
-    get custmerId(): string {
-        return this.id;
-    }
+  get id(): string {
+    return this._id;
+  }
 
-    public setAddress(address: Address): void {
-        this.address = address;
-    }
+  get name(): string {
+    return this._name;
+  }
 
-    public changeName(name: string): void {
-        this.name = name
-    }
+  isActive(): boolean {
+    return this.active;
+  }
 
-    public activate(): void {
-        if (!this.address) {
-            throw new Error("Address is mandatory to activate customer")
-        }
-        this.active = true
-    }
+  public setAddress(address: Address): void {
+    this.address = address;
+  }
 
-    public deactivate(): void {
-        this.active = true
+  public changeName(name: string): void {
+    this._name = name;
+  }
+
+  public activate(): void {
+    if (!this.address) {
+      throw new Error("Address is mandatory to activate customer");
     }
+    this.active = true;
+  }
+
+  public deactivate(): void {
+    this.active = false;
+  }
 }
