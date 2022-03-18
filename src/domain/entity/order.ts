@@ -1,4 +1,3 @@
-import { totalmem } from "os";
 import { OrderItem } from "./orderItem";
 
 export class Order {
@@ -26,6 +25,10 @@ export class Order {
       throw new Error("Items are required");
     }
     return true;
+  }
+
+  public get id(): string {
+    return this._id;
   }
 
   public total(): number {

@@ -47,15 +47,23 @@ describe("Customer entity test", () => {
     customer.deactivate();
     expect(customer.isActive()).toBeFalsy();
   });
-});
+  test("Should throw error when customer address is undefined", () => {
+    //   const customer = new Customer("123", "Adriano");
+    //   expect(() => customer.activate()).toThrow(
+    //     "Address is mandatory to activate customer"
+    //   );
+    expect(() => {
+      const customer = new Customer("123", "Adriano");
+      customer.activate();
+    }).toThrowError("Address is mandatory to activate customer");
+  });
 
-test("Should throw error when customer address is undefined", () => {
-  //   const customer = new Customer("123", "Adriano");
-  //   expect(() => customer.activate()).toThrow(
-  //     "Address is mandatory to activate customer"
-  //   );
-  expect(() => {
+  test("Should add customer reward points", () => {
     const customer = new Customer("123", "Adriano");
-    customer.activate();
-  }).toThrowError("Address is mandatory to activate customer");
+    expect(customer.rewardPoints).toBe(0);
+    customer.addRewardPoints(5);
+    expect(customer.rewardPoints).toBe(5);
+    customer.addRewardPoints(5);
+    expect(customer.rewardPoints).toBe(10);
+  });
 });
