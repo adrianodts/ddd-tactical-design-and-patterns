@@ -1,4 +1,4 @@
-import Product from "../domain/entity/product";
+import Product from "../entity/product";
 import { ProductServiceImpl } from "./product-service";
 describe("product service test", () => {
   it("should change all products price", () => {

@@ -1,4 +1,4 @@
-import Product from "../domain/entity/product";
+import Product from "../entity/product";
 
 export interface ProductService {
   increasePrice(products: Product[], percentage: number): void;

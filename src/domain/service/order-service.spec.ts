@@ -1,6 +1,6 @@
-import { Customer } from "../domain/entity/customer";
-import { Order } from "../domain/entity/order";
-import { OrderItem } from "../domain/entity/orderItem";
+import { Customer } from "../entity/customer";
+import { Order } from "../entity/order";
+import { OrderItem } from "../entity/orderItem";
 import { OrderService } from "./order-service";
 import { validate } from "uuid";
 describe("order service unit test", () => {
