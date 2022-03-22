@@ -2,7 +2,7 @@ import { Address } from "../vo/address";
 
 export class Customer {
   private active: boolean = false;
-  private address: Address | any = null;
+  private _address: Address[] = [];
   private _id: string;
   private _name: string;
   private _rewardPoints: number = 0;
@@ -34,12 +34,16 @@ export class Customer {
     return this._rewardPoints;
   }
 
+  get address(): Address[] {
+    return this._address;
+  }
+
   isActive(): boolean {
     return this.active;
   }
 
   public setAddress(address: Address): void {
-    this.address = address;
+    this._address.push(address);
   }
 
   public changeName(name: string): void {
@@ -47,7 +51,7 @@ export class Customer {
   }
 
   public activate(): void {
-    if (!this.address) {
+    if (!this._address || this._address.length === 0) {
       throw new Error("Address is mandatory to activate customer");
     }
     this.active = true;
