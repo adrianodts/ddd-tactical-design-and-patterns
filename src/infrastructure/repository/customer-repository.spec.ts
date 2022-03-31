@@ -58,6 +58,13 @@ describe("customer repository unit tests", () => {
     }
   });
 
+  it("should throw an error when customer is not found", () => {
+    const customerRepository: CustomerRepository = new CustomerRepository();
+    expect(async () => {
+      await customerRepository.find("ABCDE");
+    }).rejects.toThrow("Customer not found");
+  });
+
   // it("should update product", async () => {
   //   const productRepository: ProductRepository = new ProductRepository();
   //   const product: Product = new Product("1", "Product 1", 10);

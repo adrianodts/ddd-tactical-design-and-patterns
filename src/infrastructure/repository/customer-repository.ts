@@ -32,8 +32,20 @@ export default class CustomerRepository implements CustomerRepositoryInterface {
     throw new Error("Method not implemented.");
   }
 
-  find(id: string): Promise<Customer> {
-    throw new Error("Method not implemented.");
+  async find(id: string): Promise<Customer> {
+    let customerModel;
+    try {
+      customerModel = await CustomerModel.findOne({
+        where: { id }, rejectOnEmpty: true, include: [AddressModel]
+      });
+    } catch (error) {
+      throw new Error("Customer not found");
+    }
+    const customer = new Customer(customerModel.id, customerModel.name);
+    customerModel.addressModel.forEach(address => {
+      customer.setAddress(new Address(address.street, address.number, address.city, address.state, address.country, address.zipCode));
+    })
+    return customer;
   }
 
   findAll(): Promise<Customer[]> {
