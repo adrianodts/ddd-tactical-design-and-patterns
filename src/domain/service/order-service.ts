@@ -12,7 +12,7 @@ export class OrderService {
       throw new Error("There are no item to place order");
     }
     const order = new Order(uuid(), customer.id, items);
-    customer.addRewardPoints(order.total() / 2);
+    customer.addRewardPoints(order.total / 2);
     return order;
   }
 
@@ -20,6 +20,6 @@ export class OrderService {
     if (!orders) {
       throw new Error("There are no order to calculate total");
     }
-    return orders.reduce((acc, order) => acc + order.total(), 0);
+    return orders.reduce((acc, order) => acc + order.total, 0);
   }
 }

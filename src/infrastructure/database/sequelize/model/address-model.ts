@@ -35,6 +35,9 @@ export default class AddressModel extends Model {
   declare customerModel: CustomerModel;
 
   @ForeignKey(() => CustomerModel)
-  @Column
-  customerId: string;
+  @Column({ allowNull: false })
+  declare customer_id: string;
+
+  @BelongsTo(() => CustomerModel)
+  declare customer: CustomerModel;
 }

@@ -32,30 +32,41 @@ describe("customer repository unit tests", () => {
       "Brasil",
       "12345-678"
     );
-    customer.setAddress(address);
+    customer.addAddress(address);
     await customerRepository.create(customer);
     const customerModel = await CustomerModel.findOne({
-      where: { id: customer.id },
+      where: { id: customer.id }, 
+      include: [{ model: AddressModel }]
     });
     expect(customerModel.toJSON()).toStrictEqual({
       id: customer.id,
       name: customer.name,
       rewardPoints: customer.rewardPoints,
+      address: [{
+        id: 1,
+        customer_id: customer.id,
+        street: address.street,
+        number: address.number,
+        city: address.city,
+        state: address.state,
+        country: address.country,
+        zipCode: address.zipCode,
+      }],
     });
-    const addressModelList = await AddressModel.findAll({
-      where: { customerId: customer.id },
-    });
-    for (let addressModel of addressModelList) {
-      expect(addressModel.toJSON()).toStrictEqual({
-        street: "Streee 1",
-        number: "123",
-        city: "Sao Paulo",
-        state: "SP",
-        country: "Brasil",
-        zipCode: "12345-678",
-      });
-      console.log("entrou");
-    }
+    // const addressModelList = await AddressModel.findAll({
+    //   where: { customerId: customer.id },
+    // });
+    // for (let addressModel of customerModel.address) {
+    //   expect(addressModel.toJSON()).toStrictEqual({
+    //     street: "Streee 1",
+    //     number: "123",
+    //     city: "Sao Paulo",
+    //     state: "SP",
+    //     country: "Brasil",
+    //     zipCode: "12345-678",
+    //   });
+    //   console.log("entrou");
+    // }
   });
 
   it("should throw an error when customer is not found", () => {

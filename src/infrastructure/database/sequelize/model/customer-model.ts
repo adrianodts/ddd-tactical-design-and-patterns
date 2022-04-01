@@ -23,6 +23,6 @@ export default class CustomerModel extends Model {
   @Column({ allowNull: false })
   declare rewardPoints: number;
 
-  @HasMany(() => AddressModel) //, { foreignKey: "id" }
-  declare addressModel: AddressModel[];
+  @HasMany(() => AddressModel)
+  declare address: AddressModel[];
 }

@@ -6,26 +6,22 @@ import CustomerModel from "../database/sequelize/model/customer-model";
 
 export default class CustomerRepository implements CustomerRepositoryInterface {
   async create(entity: Customer): Promise<void> {
-    const addressModelList: AddressModel[] = [];
-    for (let address of entity.address) {
-      let addressModel = new AddressModel();
-      addressModel.street = address.street;
-      addressModel.number = address.number;
-      addressModel.city = address.city;
-      addressModel.state = address.state;
-      addressModel.country = address.country;
-      addressModel.zipCode = address.zipCode;
-      addressModel.customerId = entity.id;
-      addressModelList.push(addressModel);
-    }
-    const customerModel = await CustomerModel.create({
+    await CustomerModel.create({
       id: entity.id,
       name: entity.name,
       rewardPoints: entity.rewardPoints,
-      addressModel: {
-        addressModelList,
-      },
-    });
+      address: entity.address.map((address: Address) => {
+        return {
+          street: address.street,
+          number: address.number,
+          city: address.city,
+          state: address.state,
+          country: address.country,
+          zipCode: address.zipCode,
+          customerId: entity.id,
+        }
+      }),       
+    }, { include: [AddressModel] });
   }
 
   update(entity: Customer): void {
@@ -42,8 +38,8 @@ export default class CustomerRepository implements CustomerRepositoryInterface {
       throw new Error("Customer not found");
     }
     const customer = new Customer(customerModel.id, customerModel.name);
-    customerModel.addressModel.forEach(address => {
-      customer.setAddress(new Address(address.street, address.number, address.city, address.state, address.country, address.zipCode));
+    customerModel.address.forEach(address => {
+      customer.addAddress(new Address(address.street, address.number, address.city, address.state, address.country, address.zipCode));
     })
     return customer;
   }

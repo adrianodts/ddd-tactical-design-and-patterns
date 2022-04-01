@@ -37,7 +37,7 @@ describe("Customer entity test", () => {
       "12345-678"
     );
     const customer = new Customer("123", "Adriano");
-    customer.setAddress(address);
+    customer.addAddress(address);
     customer.activate();
     expect(customer.isActive()).toBeTruthy();
   });

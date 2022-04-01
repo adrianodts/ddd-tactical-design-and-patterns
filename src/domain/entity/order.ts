@@ -10,7 +10,7 @@ export class Order {
     this._id = id;
     this._customerId = customerId;
     this._items = items;
-    this._total = this.total();
+    this._total = this.total;
     this.validate();
   }
 
@@ -31,15 +31,19 @@ export class Order {
     return this._id;
   }
 
-  public total(): number {
-    // let total = 0;
-    // for( var item of this.items) {
-    //     total += item.calculate();
-    // }
-    // return total;
+  public get customerId(): string {
+    return this._customerId;
+  }
 
-    // return this._items.reduce((acc, item) => acc + item.price, 0);
+  public get items(): OrderItem[] {
+    return this._items;
+  }
 
+  public addItem(item: OrderItem): void {
+    this._items.push(item);
+  }
+
+  public get total(): number {    
     return this._items.reduce((acc, item) => (acc += item.calculate()), 0);
   }
 }

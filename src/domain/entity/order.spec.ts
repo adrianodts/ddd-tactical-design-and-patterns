@@ -24,6 +24,6 @@ describe("Order entity test", () => {
       new OrderItem("2", "Item 2", 5.5, "456", 2),
     ];
     let order = new Order("1", "1", items);
-    expect(order.total()).toBe(21.5);
+    expect(order.total).toBe(21.5);
   });
 });

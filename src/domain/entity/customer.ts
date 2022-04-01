@@ -42,7 +42,7 @@ export class Customer {
     return this.active;
   }
 
-  public setAddress(address: Address): void {
+  public addAddress(address: Address): void {
     this._address.push(address);
   }
 
