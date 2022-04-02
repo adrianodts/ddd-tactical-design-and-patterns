@@ -52,21 +52,7 @@ describe("customer repository unit tests", () => {
         country: address.country,
         zipCode: address.zipCode,
       }],
-    });
-    // const addressModelList = await AddressModel.findAll({
-    //   where: { customerId: customer.id },
-    // });
-    // for (let addressModel of customerModel.address) {
-    //   expect(addressModel.toJSON()).toStrictEqual({
-    //     street: "Streee 1",
-    //     number: "123",
-    //     city: "Sao Paulo",
-    //     state: "SP",
-    //     country: "Brasil",
-    //     zipCode: "12345-678",
-    //   });
-    //   console.log("entrou");
-    // }
+    });    
   });
 
   it("should throw an error when customer is not found", () => {

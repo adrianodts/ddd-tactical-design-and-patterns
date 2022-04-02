@@ -22,101 +22,62 @@ export default class OrderRepository implements OrderRepositoryInterface {
       })},
       {
         include: [{ model: OrderItemModel }]
-      } 
-    );
-    // orderModel.id = entity.id;
-    // orderModel.customer_id = entity.customerId;
-    // orderModel.total = entity.total();
-    // orderModel.items =  entity.items.map((item: OrderItem) => {
-    //   const orderItemModel = new OrderItemModel();
-    //   orderItemModel.id = item.id;
-    //   orderItemModel.order_id = entity.id;
-    //   orderItemModel.product_id = item.productId;
-    //   orderItemModel.quantity = item.quantity;
-    //   orderItemModel.price = item.price;
-    //   orderItemModel.name = item.name;
-    //   return orderItemModel;
-    // });    
-    // await orderModel.save();
+      });
   }
-  update(entity: Order): void {
-    throw new Error('Method not implemented.');
+
+  async update(entity: Order): Promise<void> {
+    await OrderModel.update({
+      id: entity.id,
+      customer_id: entity.customerId,
+      total: entity.total
+    },
+    { 
+      where: { id: entity.id } 
+    });
+
+    await OrderItemModel.destroy({
+      where: { order_id: entity.id }
+    });
+
+    await OrderItemModel.bulkCreate(entity.items.map((item: OrderItem) => {
+      return {
+        id: item.id,
+        order_id: entity.id,
+        product_id: item.productId,
+        quantity: item.quantity,
+        price: item.price,
+        name: item.name,
+      }
+    }));
   }
-  find(id: string): Promise<Order> {
-    throw new Error('Method not implemented.');
+
+  async find(id: string): Promise<Order> {
+    let orderModel;
+    try {
+      orderModel = await OrderModel.findOne({
+        where: { id }, rejectOnEmpty: true, include: [OrderItemModel]
+      });
+    } catch (error) {
+      throw new Error("order not found");
+    }
+    const order = new Order(orderModel.id, orderModel.customer_id, orderModel.items.map((item: OrderItemModel) => {
+      return new OrderItem(item.id, item.name, item.price, item.product_id, item.quantity);
+    }));
+    return order;
   }
-  findAll(): Promise<Order[]> {
-    throw new Error('Method not implemented.');
+
+  async findAll(): Promise<Order[]> {
+    let orderModel;
+    try {
+      orderModel = await OrderModel.findAll({include: [OrderItemModel]});
+    } catch (error) {
+      throw new Error("order not found");
+    }
+    const orders = orderModel.map((order: OrderModel) => {
+      return new Order(order.id, order.customer_id, order.items.map((item: OrderItemModel) => {
+        return new OrderItem(item.id, item.name, item.price, item.product_id, item.quantity);
+      }));
+    });
+    return orders;
   }
-  // async create(entity: Order): Promise<void> {
-  //   const addressModelList: AddressModel[] = [];
-  //   for (let address of entity.address) {
-  //     let addressModel = new AddressModel();
-  //     addressModel.street = address.street;
-  //     addressModel.number = address.number;
-  //     addressModel.city = address.city;
-  //     addressModel.state = address.state;
-  //     addressModel.country = address.country;
-  //     addressModel.zipCode = address.zipCode;
-  //     addressModel.customerId = entity.id;
-  //     addressModelList.push(addressModel);
-  //   }
-  //   const customerModel = await CustomerModel.create({
-  //     id: entity.id,
-  //     name: entity.name,
-  //     rewardPoints: entity.rewardPoints,
-  //     addressModel: {
-  //       addressModelList,
-  //     },
-  //   });
-  // }
-
-  // update(entity: Customer): void {
-  //   throw new Error("Method not implemented.");
-  // }
-
-  // async find(id: string): Promise<Customer> {
-  //   let customerModel;
-  //   try {
-  //     customerModel = await CustomerModel.findOne({
-  //       where: { id }, rejectOnEmpty: true, include: [AddressModel]
-  //     });
-  //   } catch (error) {
-  //     throw new Error("Customer not found");
-  //   }
-  //   const customer = new Customer(customerModel.id, customerModel.name);
-  //   customerModel.addressModel.forEach(address => {
-  //     customer.setAddress(new Address(address.street, address.number, address.city, address.state, address.country, address.zipCode));
-  //   })
-  //   return customer;
-  // }
-
-  // findAll(): Promise<Customer[]> {
-  //   throw new Error("Method not implemented.");
-  // }
-
-  // async update(entity: Product): Promise<void> {
-  //   await ProductModel.update(
-  //     {
-  //       name: entity.name,
-  //       price: entity.price,
-  //     },
-  //     {
-  //       where: { id: entity.id },
-  //     }
-  //   );
-  // }
-  // async find(id: string): Promise<Product> {
-  //   const productModel = await ProductModel.findOne({
-  //     where: { id },
-  //   });
-  //   return new Product(productModel.id, productModel.name, productModel.price);
-  // }
-  // async findAll(): Promise<Product[]> {
-  //   const productsModel: ProductModel[] = await ProductModel.findAll();
-  //   const products: Product[] = productsModel.map((p) => {
-  //     return new Product(p.id, p.name, p.price);
-  //   });
-  //   return products;
-  // }
 }
